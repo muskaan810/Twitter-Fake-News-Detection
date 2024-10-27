@@ -1,0 +1,13 @@
+flask
+snscrape
+twscrape
+asyncio
+nest_asyncio
+pandas
+joblib
+scikit-learn
+collections
+re
+nltk
+numpy
+gensim
