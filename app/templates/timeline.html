@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timeline</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+         body {
+        background-color: #4A4A4A;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        height: 100vh;
+       
+    }
+
+    .main-container {
+        display: flex;
+        width: 100%;
+        
+    }
+
+    
+/* Timeline container background color and text color adjustments */
+.timeline-container {
+    flex: 1;
+    max-width: 22%;
+    height: 100vh;
+    overflow-y: scroll;
+    border: 1px solid #ddd;
+    border-radius: 10px; /* Rounded borders */
+    background-color: #4A4A4A; /* Same as header color */
+    color: #FFFFFF; /* Text color for readability */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+
+.timeline-container::-webkit-scrollbar-track {
+    background: black; /* Background color of the track */
+    border-radius: 10px; /* Rounded borders */
+}
+
+.timeline-container::-webkit-scrollbar-thumb {
+    background: #6c757d; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded borders */
+}
+
+.timeline-container::-webkit-scrollbar-thumb:hover {
+    background: #5a6268; /* Darker color on hover */
+}
+
+/* List items */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9; /* Slightly lighter than header */
+    border-radius: 5px; /* Rounded borders */
+}
+
+        li:last-child {
+            border-bottom: none;
+        }
+       
+/* Tweet cards in timeline */
+.tweet-card {
+    border-bottom: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            
+            align-items: center;
+}
+
+/* Header within tweet cards */
+.tweet-header {
+    display: flex;
+    margin-bottom: 10px;
+    color: #FFFFFF; /* Text color for readability */
+}
+
+    .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+    .verified-badge {
+            margin-left: 5px;
+        }
+
+    .username {
+        font-weight: bold;
+        color: #1da1f2;
+        margin-right: 60px;
+        margin-top: 10px;
+    }
+
+    .tweet-content {
+        margin-bottom: 10px;
+        font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+font-weight: 500;
+font-size: 15px;
+line-height: 1.3;
+color: black;
+    }
+
+    .tweet-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-right:30px;
+        margin-bottom: 10px;
+    }
+
+    
+
+    .tweet-footer p {
+        margin: 0;
+    }
+        
+        a {
+            color: #1DA1F2;
+            font-weight: bold;
+        }
+
+    
+/* Buttons with rounded borders */
+.reach-button {
+    display: inline-block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px; /* Oval shape */
+    background-color: #f0f0f0; /* Light grey background */
+    color: #333; /* Dark text */ /* Text color for readability */
+    text-decoration: none;
+    text-align: center;
+}
+
+.reach-button:hover {
+    background-color: #ccc; /* Darker grey on hover */
+}
+
+.classification {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
+    .classification-real {
+        color: #17BF63;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .classification-fake {
+        color: #FF0000;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .classification-opinion {
+        color: #eba000;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+/* Container for timeline buttons */
+.timeline-buttons {
+    margin-top: 10px;
+    display: flex;
+}
+
+
+       
+    .chart-container {
+    height: 100vh;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #4A4A4A;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.card-container {
+    display: flex;
+    justify-content: space-between;
+    height: 90px;
+}
+.card {
+    flex: 1;
+    max-width: 24%;
+    padding: 0px; /* Added padding for better spacing */
+    border: 1px solid #333; /* Darker border for more definition */
+    border-radius: 10px;
+    background-color: red; /* Change to a classy red on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Slightly larger radius for a smoother look */
+    /* White text for better readability */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow for depth */
+    text-align: center;
+    transition: transform 0.1s, background-color 0.1s, box-shadow 0.1s;
+    color: #ffffff; /* Smooth transition for hover effects */
+}
+
+.card:hover {
+    transform: scale(1.05); 
+    background-color: #4A4A4A; /* Dark grey background */
+    color: #ffffff; /* Increase size on hover */
+     /* Deeper shadow on hover for more depth */
+}
+
+.chart-wrapper {
+    margin-top: 10px;
+    display: flex;
+    background-color: #f9f9f9;
+    height: 45vh;
+    border-radius: 5px;
+}
+
+.pie-wrapper {
+    width: 40%; /* Adjust width of pie chart */
+    margin-left: 0px;
+    margin-top: 0;
+   height: 500px;
+   z-index: 1;
+   transition: transform 0.3s; 
+}
+
+.pie-wrapper:hover {
+    transform:scale(1.03);
+}
+   
+
+.chart-column {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    
+    
+    
+}
+
+.gauge-wrapper{
+    /*position: relative; 
+    top: 230px; 
+    right: 390px;*/ 
+    z-index: 6;
+    height: 180px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: transform 0.3s; 
+}
+
+.gauge-wrapper:hover {
+    transform:scale(1.03);
+}
+
+ .line-wrapper {
+    position: absolute; 
+    top: 90px; 
+    right: 280px; 
+    /*flex: 1;
+    margin-top: 0;  Adjust spacing between gauge and line charts 
+    margin-left: 0px; */
+    height: 230px;
+    z-index: 2;
+    transition: transform 0.3s; 
+}
+
+.line-wrapper:hover {
+    transform:scale(1.03);
+}
+    
+
+
+.bar-wrapper {
+    position: absolute; 
+    top: 410px; 
+    right: 287px;
+    height: 200px;
+    z-index: 9;
+    transition: transform 0.3s; 
+}
+
+.bar-wrapper:hover {
+    transform:scale(1.03);
+}
+    
+
+.map-wrapper {
+    
+    width: 500px; 
+    z-index: 3;
+    height: 500px;
+    
+    /*
+    position: absolute; 
+    top: 380px; 
+    right: 610px;
+    height: 100px;
+    z-index: 5;
+    ;*/
+    transition: transform 0.3s; 
+}
+
+.map-wrapper:hover {
+    transform:scale(1.03);
+}
+
+
+        .table-container {
+            flex: 1;
+            max-width: 26%;
+            height: 100vh;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            background-color: #4A4A4A;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+        .tab-container {
+            margin-top: 20px;
+            z-index: 4;
+            
+        }
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 10px;
+            
+            border-radius: 5px;
+            background-color: #f4f4f4;
+        }
+        .tab.active {
+            background-color: red;
+            color: white;
+        }
+
+        
+.tab:hover
+{ 
+    background-color: #4A4A4A; /* Dark grey background */
+    color: #ffffff;
+}
+        .dropdown {
+        display: inline-block;
+        position: relative;
+    }
+
+    .dropdown-button {
+        background-color: transparent;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor:pointer;
+        border-radius: 35%;
+        padding: 5px;
+    }
+
+    .dropdown-button:hover {
+        background-color: rgb(199, 195, 195);
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 100px;
+        top: 10px;
+        right: 10px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content button {
+        color: rgb(36, 35, 35);
+        padding: 8px 2px;
+        text-decoration:none;
+        display: block;
+        font-family:'Arial';
+        font-size: 14px;
+        font-weight: bold;
+        width: 100%;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker background for better visibility */
+}
+
+.modal-content {
+    background-color: #ffffff; /* White background for modal content */
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 8px; /* Rounded corners */
+    border: 1px solid #ddd; /* Light gray border */
+    width: 80%;
+    max-width: 600px;
+    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+.close {
+    color: #888;
+    float: right;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+h2 {
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.modal-description {
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: calc(100% - 20px);
+    margin: 10px 0;
+    padding: 15px;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #f5f5f5; /* Light gray background */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #333;
+    resize: vertical; /* Allow vertical resizing */
+}
+
+.modal-footer {
+    margin-top: 20px;
+    text-align: center;
+    align-items: center;
+}
+
+.modal-footer button {
+    padding: 12px 25px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff; /* Blue background for buttons */
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.modal-footer button:hover {
+    background-color: #0056b3; /* Darker blue for hover effect */
+}
+
+.modal-footer button#cancelBtn {
+    background-color: #dc3545; /* Red background for Cancel button */
+}
+
+.modal-footer button#cancelBtn:hover {
+    background-color: #c82333; /* Darker red for hover effect */
+}
+
+
+.navigation-tabs button select{
+  display: flex;
+  
+}
+
+.navigation-tabs button {
+  /* Add spacing between buttons */
+  padding: 5px 5px; /* Adjust padding for desired size */
+  border: 1px solid #ddd; /* Add a border */
+  border-radius: 5px; /* Add rounded corners */
+  background-color: #f9f9f9; 
+  margin-bottom: 10px;/* Set default background color */
+}
+
+.navigation-tabs select {
+  
+  width: 55px;/* Add spacing between buttons */
+  padding: 5px 0px; /* Adjust padding for desired size */
+  border: 1px solid #ddd; /* Add a border */
+  border-radius: 5px; /* Add rounded corners */
+  background-color: #f9f9f9;
+  margin-bottom: 10px; /* Set default background color */
+}
+
+.navigation-tabs button:hover {
+  background-color: #ccc; /* Change background on hover */
+}
+
+
+.company-tabs {
+  display:inline-flex;
+  justify-content:space-around;
+}
+
+.com-tab {
+   margin-right: 2px;/* Add spacing between buttons */
+  padding: 8px 50px; /* Adjust padding for desired size */
+  border-bottom: 2px grey solid; 
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;/* Remove border */
+  border-radius: 5px; /* Add rounded corners */
+  cursor: pointer; 
+  background-color: red; 
+    color: white;
+    border-bottom: 2px red solid; 
+font-size: 18px;
+font-family: 'Helvetica Neue';
+font-weight: 500;
+
+}
+
+.com-tab:hover
+{ 
+    background-color: #4A4A4A; /* Dark grey background */
+    color: #ffffff;
+
+}
+
+.com-tab.active  #tesla-btn:active #ford-btn:active {
+    background-color: white; 
+    color: #333;
+    border-bottom: 2px #007bff solid; 
+}
+
+.header-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    /* Adjust as needed */
+}
+
+
+
+.header-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    /* Adjust as needed */
+    margin-bottom: 20px;
+}
+
+.header-container .logo {
+    width: 40px; /* Adjust width as needed */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 15px; /* Space between logo and heading */
+}
+
+.header-container h3 {
+    font-size: 25px;
+    color: white;
+    margin: 0; /* Remove default margin */
+}
+
+.header-container button {
+    margin-left: auto; /* Push button to the right */
+}
+
+.reset-btn {
+    margin-left: auto;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 20%;
+}
+
+    </style>
+</head>
+<body>
+    
+
+    <div class="main-container">
+        <div class="timeline-container">
+            <div class="timeline-header">
+                <div class="header-container">
+                    <a href="/" target="_blank">
+                    <img src="https://www.verolt.com/wp-content/uploads/2024/03/verolt-logo.svg" alt="Logo" class="logo"> </a>
+            <h3 style="font-family: 'Helvetica Neue'; color: white;">Dashboard</h3>
+            <button id="all-btn"  class="reset-btn" onclick="filterTweets('all')">Reset</button>
+            </div>
+            <div class="company-tabs">
+            <button id="tesla-btn" class="com-tab" onclick="filterTweets('tesla')">Tesla</button>
+            <button id="ford-btn" class="com-tab" onclick="filterTweets('ford')">Ford</button>
+           </div>
+
+            <div class="timeline-buttons">
+                <div class="navigation-tabs">
+                    <span style="font-size: 12px;">Filter By: </span>
+                    <button id="top-btn" onclick="filterTweets('top')">Top</button>
+                    <button id="most-recent-btn" onclick="filterTweets('recent')">Most Recent</button>
+                
+                   <!-- <button id="date-filter-btn" onclick="toggleDateOptions()">Date</button> -->
+                    <!-- Date Options Dropdown List (Initially Hidden) -->
+                    <select id="date-options" onchange="handleDateOptionChange(this)">
+                        <option value="Date">Date</option>
+                        <option value="2024-07-05" onclick="filterTweetsByDate('2024-07-05')">5th July, 2024</option>
+                        <option value="2024-07-06" onclick="filterTweetsByDate('2024-07-06')">6th July, 2024</option>
+                        <option value="2024-07-07" onclick="filterTweetsByDate('2024-07-07')">7th July, 2024</option>
+                    </select>
+               
+                <button id="today-btn" onclick="filterTweets('reset')">All</button>
+               
+                </div>
+            </div>
+            </div>
+            <ul>
+                {% if tweets %}
+                    {% for tweet in tweets %}
+                    <li class="tweet-card">
+                        <div class="tweet-header">
+                        {% if tweet.profile_image_url %}
+                            <img src="{{ tweet.profile_image_url }}" alt="Profile Pic" class="profile-pic">
+                        {% endif %}
+                                <span class="username">{{ tweet.username }} 
+                                    <br>
+                                    <span style="font-size: smaller; color:#657786; margin-top: 24px; margin-right: 0px;">{{ tweet.date }}   </span> <span style="font-size: smaller; color:#657786; margin-top: 24px; margin-right: 0px;"> {{ tweet.time }} </span>
+                                </span>
+                                <div class="dropdown">
+                                    <button class="dropdown-button">⋮</button>
+                                    <div class="dropdown-content">
+                                       
+                                        <button class="engage-btn">Engage</button>
+                                       
+                                        <a href="https://x.com/{{ tweet.username }}" class="reach-btn-link">
+                                            <button class="reach-btn">Reach</button>
+                                        </a>
+                                    </div>
+                                    </div>
+                                {% if tweet.verified == 'True' %}
+                                    <span class="verified-badge">☑️</span>
+                                {% endif %}
+                               
+                            </div>
+                           
+                            <div class="tweet-content">
+                            {{ tweet.content }}
+                            {% if tweet.tweet_urls %}
+                                <div class="tweet-media">
+                                    {% for url in tweet.tweet_urls %}
+                                        <a href="{{ url }}" target="_blank">See more</a>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="tweet-footer">
+                            <p style="color: #14171A; font-size: 15px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-weight: 500;">❤️  {{ tweet.likes_show }}</p>
+                            <p style="color: #14171A;font-size: 15px; font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;  font-weight: 500;">🔁  {{ tweet.retweets_show }}</p>
+                            <p style="color: #14171A; font-size: 15px;font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-weight: 500;">💬  {{ tweet.replies_show }}</p>
+                        </div>
+                        
+                        <div class="classification classification-{{ 'real' if tweet.prediction == 'Real' else 'fake' }}">
+                            
+                            {% if tweet.predicted_labels == 'Real' %}
+                                <div class="classification-real">✔️ Likely Real</div>
+                            {% elif tweet.predicted_labels =='Fake' %}
+                                <div class="classification-fake">✋ False, misleading or exaggerated claims</div>
+                            {% else %}
+                                <div class="classification-opinion">✍️ Suggestion or Opinion</div>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <p>No tweets found.</p>
+                {% endif %}
+            </ul>
+            <div class="timeline-footer">
+                <a href="#" class="load-more">Load More</a>
+            </div>
+        </div>
+        
+
+        <div class="chart-container" style="background-image: url('#');">
+            <div class="card-container">
+                <div class="card">
+                    <h4>Total Mentions</h4>
+                    <p>{{ total_tweets }}</p>
+                </div>
+                <div class="card">
+                    <h4>Total Likes</h4>
+                    <p>{{ total_likes }}</p>
+                </div>
+                <div class="card">
+                    <h4>Total Engagement</h4>
+                    <p>{{ total_engagement }}</p>
+                </div>
+                <div class="card">
+                    <h4>Total Positive</h4>
+                    <p>{{ total_positive }}</p>
+                </div>
+            </div>
+        
+            <div class="chart-wrapper">
+                <div class="pie-wrapper">
+                    {{ pie_chart_html | safe }}
+                </div>
+                <div class="chart-column">
+                    <div class="line-wrapper">
+                        {{ line_chart_html | safe }}
+                    </div>
+                    <div class="bar-wrapper">
+                        {{ bar_chart_html | safe }}  <!-- Render Bar Chart -->
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="chart-wrapper" style="margin-top: 0px;">
+                
+                <div class="map-wrapper" id="mappy">
+                    {{ map_chart_html | safe }}
+                </div>
+                <!-- Dropdown for Country Selection -->
+       
+            </div>
+        </div>
+        
+
+        <div class="table-container">
+            <div class="gauge-wrapper">
+                {{ gauge_chart_html | safe }}
+            </div>
+            <div class="tab-container" style="margin-bottom: 10px;">
+                <div class="tab active" onclick="showTab('influencers')">Top Influencers</div>
+                <div class="tab" onclick="showTab('haters')">Top Haters</div>
+            </div>
+            <div id="influencers" class="tab-content">
+           
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for influencer in top_influencers %}
+                        <tr>
+                            <td>{{ influencer.username }}</td>
+                            <td style="border-left: none;"><a href="https://x.com/{{ influencer.username }}" class="reach-button" target="_blank">Reach</a></td> <!-- Reach button -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            
+            <div id="haters" class="tab-content" style="display:none;">
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th> </th> <!-- New column for actions -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hater in top_haters %}
+                        <tr>
+                            <td>{{ hater.username }}</td>
+                            <td style="border-left: none;"><a href="https://x.com/{{ hater.username }}" class="reach-button" target="_blank">Report</a></td> <!-- Report button -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+
+  <!-- Modal structure -->
+<div id="engageModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Compose Response</h2>
+        <p class="modal-description">Please tweet a response addressing the fake news here.</p>
+        <textarea id="modalTweetContent" rows="8" cols="50"></textarea>
+        <div class="modal-footer">
+            <button id="sendBtn">Post Tweet</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+    
+    <script>
+        
+  
+//function filterTweets(company) {
+        // Send a GET request with the company as a query parameter
+  //      window.location.href = `/timeline?company=${company}`;
+    //}
+
+ // Function to handle modal display
+// Function to handle modal display
+function openModal(content) {
+    var modal = document.getElementById('engageModal');
+    var modalTweetContent = document.getElementById('modalTweetContent');
+    
+    // Set the tweet content in the editable textarea
+    modalTweetContent.value = content;
+
+    modal.style.display = 'block';
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('engageModal');
+    var closeModal = document.querySelector('.close');
+    var sendBtn = document.getElementById('sendBtn');
+    var cancelBtn = document.getElementById('cancelBtn');
+
+   
+    var engageButtons = document.querySelectorAll('.engage-btn');
+    engageButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var tweetContent = button.closest('.tweet-card').querySelector('.tweet-content').textContent.trim();
+            openModal("This is false! \n\n" + '"' + tweetContent + '"');
+        });
+    });
+
+    // Event listener for close button
+    closeModal.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Event listener for send button
+    sendBtn.addEventListener('click', function() {
+        var responseContent = document.getElementById('modalTweetContent').value;
+     
+       fetch('/send_tweet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ response: responseContent }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Tweet sent successfully!');
+            } else {
+                alert('Failed to send tweet.');
+            }
+            modal.style.display = 'none';
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to send tweet.');
+            modal.style.display = 'none';
+        });
+    });
+       
+
+    // Event listener for cancel button
+    cancelBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+});
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdownButtons = document.querySelectorAll('.dropdown-button');
+        dropdownButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+
+        window.addEventListener('click', function (e) {
+            if (!e.target.matches('.dropdown-button')) {
+                const dropdowns = document.querySelectorAll('.dropdown-content');
+                dropdowns.forEach(dropdown => {
+                    if (dropdown.style.display === 'block') {
+                        dropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    });
+
+
+
+    function filterTweets(filter) {
+    let url = '/timeline';
+
+    // Check if any existing filters are already present in the URL
+    let currentUrl = new URL(window.location.href);
+    let params = new URLSearchParams(currentUrl.search);
+
+    // Remove existing parameters based on priority
+    if (filter === 'all') {
+        params.delete('company');
+        params.delete('date');
+        params.delete('recent');
+        params.delete('fake_news');
+       
+    } else if (filter === 'tesla' || filter === 'ford') {
+        // Toggle company filter
+        if (params.has('company')) {
+            params.delete('company');
+        }
+        params.append('company', filter);
+
+        // Remove date and recent filters if 'company' is selected
+        params.delete('date');
+        params.delete('recent');
+    } else if (filter === 'today') {
+        // Toggle date filter
+        params.delete('date');
+        params.append('date', 'today');
+
+        // Remove recent filter if 'today' is selected
+        params.delete('recent');
+    } else if (filter === 'recent') {
+        // Toggle recent filter
+        if (params.has('date') && params.get('date') === 'today') {
+            params.delete('recent');
+            params.append('recent', 'true');
+        } else {
+            
+            params.append('recent', 'true');
+        }
+    } else if (filter === 'top') {
+        // Clear recent filter when 'top' is selected
+        params.delete('recent');
+    } else if (filter === 'fake_news') {
+        // Toggle fake news filter
+        if (params.has('fake_news')) {
+            params.delete('fake_news');
+        } else {
+            params.append('fake_news', 'true');
+        }
+    } 
+    else if (filter === 'reset') {
+        params.delete('date');
+        params.delete('recent');
+        params.delete('fake_news');
+
+    } 
+
+    // Construct the new URL
+    url = url + '?' + params.toString();
+
+    // Redirect to the new URL
+    window.location.href = url;
+}
+
+
+
+
+// Function to handle gauge meter click
+function onGaugeMeterClick() {
+    filterTweets('fake_news'); // Apply fake news filter when gauge meter is clicked
+}
+
+// Event listener for the gauge meter
+document.addEventListener('DOMContentLoaded', function() {
+    const gauge = document.querySelector('.gauge-wrapper'); // Adjust selector if necessary
+    gauge.addEventListener('click', onGaugeMeterClick);
+});
+
+function showDateOptions() {
+    let dateOptions = document.getElementById('date-options');
+    if (dateOptions.style.display === 'none') {
+        dateOptions.style.display = 'block';
+    } else {
+        dateOptions.style.display = 'none';
+    }
+}
+function handleDateOptionChange(selectElement) {
+    var selectedOption = selectElement.options[selectElement.selectedIndex];
+    if (selectedOption.value) {
+        selectedOption.onclick();
+    }
+}
+function filterTweetsByDate(date) {
+    let url = '/timeline';
+
+    // Check if any existing filters are already present in the URL
+    let currentUrl = new URL(window.location.href);
+    let params = new URLSearchParams(currentUrl.search);
+
+    // Remove existing date parameters if any
+    params.delete('date');
+
+    // Add the selected date parameter
+    params.append('date', date);
+
+    // Construct the new URL
+    url = url + '?' + params.toString();
+
+    // Redirect to the new URL
+    window.location.href = url;
+}
+
+    function showTab(tabName) {
+        // Get all elements with class name 'tab-content'
+        var tabContents = document.getElementsByClassName('tab-content');
+        
+        // Loop through all tab-content elements
+        for (var i = 0; i < tabContents.length; i++) {
+            // Hide all tab-content elements
+            tabContents[i].style.display = 'none';
+        }
+
+        // Get all elements with class name 'tab'
+        var tabs = document.getElementsByClassName('tab');
+
+        // Loop through all tab elements
+        for (var i = 0; i < tabs.length; i++) {
+            // Remove the 'active' class from all tab elements
+            tabs[i].classList.remove('active');
+        }
+
+        // Show the selected tab-content element
+        document.getElementById(tabName).style.display = 'block';
+
+        // Add the 'active' class to the clicked tab element
+        event.currentTarget.classList.add('active');
+    }
+
+    
+    </script>
+</body>
+</html>
